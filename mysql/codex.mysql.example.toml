@@ -1,0 +1,13 @@
+# Codex global config.toml snippet
+# Data source: MySQL via mysql-mcp-server 0.2.2
+# Access limits are enforced by DB privileges of MYSQL_USER
+[mcp_servers.mysql_hppi]
+command = "uvx"
+args = ["--from", "mysql-mcp-server==0.2.2", "python", "-m", "mysql_mcp_server.server"]
+
+[mcp_servers.mysql_hppi.env]
+MYSQL_HOST = "127.0.0.1"
+MYSQL_PORT = "3306"
+MYSQL_USER = "replace_me"
+MYSQL_PASSWORD = "replace_me"
+MYSQL_DATABASE = "replace_me"
