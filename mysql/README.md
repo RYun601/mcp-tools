@@ -24,8 +24,6 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\mcp\mysql\setup-vsco
 2. 重启 MCP 客户端。
 
 ## 全局配置注意事项
-- 同时使用工作区 `.vscode/mcp.json` 与全局 `C:\Users\ranyun\.codex\config.toml` 时，建议避免同名服务。
-- 推荐将全局旧项 `[mcp_servers.mysql]` 删除、注释或改名为 `mysql_legacy`。
 - Codex 全局示例：`tools/mcp/mysql/codex.mysql.example.toml`。
 
 ## 如何更新上游版本
