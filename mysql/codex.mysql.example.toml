@@ -11,3 +11,15 @@ MYSQL_PORT = "3306"
 MYSQL_USER = "replace_me"
 MYSQL_PASSWORD = "replace_me"
 MYSQL_DATABASE = "replace_me"
+
+# Alternative upstream: benborla/mcp-server-mysql 2.0.5
+[mcp_servers.mysql_hppi_benborla]
+command = "npx"
+args = ["-y", "@benborla29/mcp-server-mysql@2.0.5"]
+
+[mcp_servers.mysql_hppi_benborla.env]
+MYSQL_HOST = "127.0.0.1"
+MYSQL_PORT = "3306"
+MYSQL_USER = "replace_me"
+MYSQL_PASS = "replace_me"
+MYSQL_DB = "replace_me"
