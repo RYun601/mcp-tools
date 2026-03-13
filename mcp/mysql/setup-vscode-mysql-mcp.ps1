@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [string]$ServerName = "mysql_hppi",
+    [string]$ServerName = "mysql_1",
     [switch]$KeepLegacyMysql
 )
 
@@ -41,6 +41,91 @@ function ConvertTo-HashtableRecursive {
     }
 
     return $InputObject
+}
+
+function Format-CompactJson {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Json,
+        [int]$IndentSize = 2
+    )
+
+    $stringBuilder = New-Object System.Text.StringBuilder
+    $indentLevel = 0
+    $isInString = $false
+    $isEscaped = $false
+    $newline = "`r`n"
+
+    for ($index = 0; $index -lt $Json.Length; $index++) {
+        $char = $Json[$index]
+
+        if ($isInString) {
+            [void]$stringBuilder.Append($char)
+
+            if ($isEscaped) {
+                $isEscaped = $false
+                continue
+            }
+
+            if ($char -eq '\') {
+                $isEscaped = $true
+                continue
+            }
+
+            if ($char -eq '"') {
+                $isInString = $false
+            }
+            continue
+        }
+
+        if ([char]::IsWhiteSpace($char)) {
+            continue
+        }
+
+        switch ($char) {
+            '{' {
+                [void]$stringBuilder.Append($char)
+                $indentLevel++
+                [void]$stringBuilder.Append($newline)
+                [void]$stringBuilder.Append((' ' * ($indentLevel * $IndentSize)))
+            }
+            '[' {
+                [void]$stringBuilder.Append($char)
+                $indentLevel++
+                [void]$stringBuilder.Append($newline)
+                [void]$stringBuilder.Append((' ' * ($indentLevel * $IndentSize)))
+            }
+            '}' {
+                $indentLevel--
+                [void]$stringBuilder.Append($newline)
+                [void]$stringBuilder.Append((' ' * ($indentLevel * $IndentSize)))
+                [void]$stringBuilder.Append($char)
+            }
+            ']' {
+                $indentLevel--
+                [void]$stringBuilder.Append($newline)
+                [void]$stringBuilder.Append((' ' * ($indentLevel * $IndentSize)))
+                [void]$stringBuilder.Append($char)
+            }
+            ',' {
+                [void]$stringBuilder.Append($char)
+                [void]$stringBuilder.Append($newline)
+                [void]$stringBuilder.Append((' ' * ($indentLevel * $IndentSize)))
+            }
+            ':' {
+                [void]$stringBuilder.Append(': ')
+            }
+            '"' {
+                $isInString = $true
+                [void]$stringBuilder.Append($char)
+            }
+            default {
+                [void]$stringBuilder.Append($char)
+            }
+        }
+    }
+
+    return $stringBuilder.ToString()
 }
 
 # Resolve repository root from script path so cwd does not matter
@@ -104,7 +189,9 @@ $servers[$ServerName] = @{
     envFile = ".vscode/mysql.mcp.env"
 }
 
-$config | ConvertTo-Json -Depth 20 | Set-Content -Path $mcpPath -Encoding UTF8
+$jsonCompact = $config | ConvertTo-Json -Depth 20 -Compress
+$jsonFormatted = Format-CompactJson -Json $jsonCompact -IndentSize 2
+Set-Content -Path $mcpPath -Value $jsonFormatted -Encoding UTF8
 
 if (-not (Get-Command uvx -ErrorAction SilentlyContinue)) {
     Write-Warning "uvx was not found. Install uv first: https://docs.astral.sh/uv/getting-started/installation/"

@@ -23,6 +23,17 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\mcp\mysql\setup-vsco
 1. 编辑 `.vscode/mysql.mcp.env`，填入真实数据库连接信息。
 2. 重启 MCP 客户端。
 
+## macOS 一键安装（VSCode 工作区）
+在仓库根目录执行：
+
+```bash
+bash ./tools/mcp/mysql/setup-vscode-mysql-mcp.sh
+```
+
+可选参数：
+- 指定服务名：`--server-name mysql_custom`
+- 保留旧 `mysql` 配置：`--keep-legacy-mysql`
+
 ## 全局配置注意事项
 - Codex 全局示例：`tools/mcp/mysql/codex.mysql.example.toml`。
 
@@ -31,6 +42,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\mcp\mysql\setup-vsco
 
 1. 修改版本号
 - `tools/mcp/mysql/setup-vscode-mysql-mcp.ps1` 中的 `mysql-mcp-server==0.2.2`
+- `tools/mcp/mysql/setup-vscode-mysql-mcp.sh` 中的 `mysql-mcp-server==0.2.2`
 - `tools/mcp/mysql/codex.mysql.example.toml` 中的同版本号
 
 2. 本地验证
@@ -46,5 +58,6 @@ Get-Content .\.vscode\mcp.json -Raw | ConvertFrom-Json | Out-Null
 
 ## 目录说明
 - `setup-vscode-mysql-mcp.ps1`：VSCode 本地安装脚本
+- `setup-vscode-mysql-mcp.sh`：macOS 本地安装脚本
 - `mysql.mcp.env.example`：数据库连接模板
 - `codex.mysql.example.toml`：Codex 全局配置示例
