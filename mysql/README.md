@@ -15,16 +15,16 @@
 ## 命令模式
 
 ### 1) install（默认）
-用途：机器级生成预设配置，一次生成后可在多个项目复用。
+用途：机器级生成预设配置，一次生成后可在多个项目复用（在工具根目录下执行下列命令）。
 
 Windows：
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\mysql\setup-vscode-mysql-mcp.ps1 install
+powershell -NoProfile -ExecutionPolicy Bypass -File .\mysql\setup-vscode-mysql-mcp.ps1 install
 ```
 
 macOS/Linux：
 ```bash
-bash ./tools/mysql/setup-vscode-mysql-mcp.sh install
+bash ./mysql/setup-vscode-mysql-mcp.sh install
 ```
 
 默认行为：
@@ -45,15 +45,18 @@ bash ./tools/mysql/setup-vscode-mysql-mcp.sh install
 ### 2) apply
 用途：将指定上游写入某个项目的 `.vscode/mcp.json`，并可清理旧上游配置避免冲突。
 
-Windows（当前目录即目标项目）：
+Windows（默认在工具根目录执行，显式指定目标项目）：
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\mysql\setup-vscode-mysql-mcp.ps1 apply -Upstream benborla
+powershell -NoProfile -ExecutionPolicy Bypass -File .\mysql\setup-vscode-mysql-mcp.ps1 apply -WorkspaceRoot D:\path\to\target-project
 ```
 
-macOS/Linux（指定目标项目目录）：
+macOS/Linux（默认在工具根目录执行，显式指定目标项目）：
 ```bash
-bash ./tools/mysql/setup-vscode-mysql-mcp.sh apply --upstream designcomputer --workspace-root /path/to/project
+bash ./mysql/setup-vscode-mysql-mcp.sh apply --workspace-root /path/to/target-project
 ```
+
+如果当前目录本身就是目标项目根目录，可省略 `-WorkspaceRoot/--workspace-root`。
+如果不指定 `-Upstream/--upstream`，`apply` 默认使用 `designcomputer`。
 
 apply 行为：
 - 自动创建目标项目 `.vscode/`。
@@ -63,7 +66,7 @@ apply 行为：
 - 默认清理已识别的旧 MySQL MCP 上游配置，避免冲突。
 
 可选参数：
-- `--upstream designcomputer|benborla`（apply 必填，不能为 `all`）
+- `--upstream designcomputer|benborla`（apply 选填，默认 `designcomputer`，不能为 `all`）
 - `--server-name mysql_custom`
 - `--workspace-root /path/to/project`
 - `--keep-legacy-mysql`（保留旧服务名 `mysql`）

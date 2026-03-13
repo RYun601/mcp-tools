@@ -367,6 +367,10 @@ if ($Command -eq "install") {
     exit 0
 }
 
+if ($Command -eq "apply" -and -not $PSBoundParameters.ContainsKey("Upstream")) {
+    $Upstream = "designcomputer"
+}
+
 if ($Upstream -eq "all") {
     throw "apply command requires a single upstream: -Upstream designcomputer or -Upstream benborla"
 }

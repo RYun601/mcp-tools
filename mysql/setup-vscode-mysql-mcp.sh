@@ -3,6 +3,7 @@ set -euo pipefail
 
 COMMAND="install"
 UPSTREAM="all"
+UPSTREAM_SPECIFIED="0"
 SERVER_NAME="mysql_1"
 WORKSPACE_ROOT="$(pwd)"
 OUTPUT_DIR=""
@@ -22,7 +23,7 @@ print_usage() {
   apply                         将指定上游写入目标项目 .vscode/mcp.json
 
 参数:
-  --upstream <name>             上游: all(默认)、designcomputer、benborla
+  --upstream <name>             上游: all/install默认、designcomputer/apply默认、benborla
   --server-name <name>          mcp.json 中服务名，默认 mysql_1
   --workspace-root <path>       apply 目标项目根目录，默认当前目录
   --output-dir <path>           install 输出目录，默认 ~/.mysql-mcp-presets
@@ -49,6 +50,7 @@ while (($# > 0)); do
         exit 1
       fi
       UPSTREAM="$2"
+      UPSTREAM_SPECIFIED="1"
       shift 2
       ;;
     --server-name)
@@ -201,6 +203,10 @@ PY
 }
 
 run_apply() {
+  if [[ "${UPSTREAM_SPECIFIED}" == "0" ]]; then
+    UPSTREAM="designcomputer"
+  fi
+
   if [[ "${UPSTREAM}" == "all" ]]; then
     echo "错误: apply 命令必须指定单个上游：--upstream designcomputer 或 --upstream benborla" >&2
     exit 1
